@@ -1,12 +1,14 @@
-from Agent import Agent
 from random import randrange, randint
 
+from Agent import Agent
 
-class Game:
+
+class Solver:
     def __init__(self, grid_dim, nb_agents):
         self.grid_dim = grid_dim
         self.nb_agents = nb_agents
         self.agents = self.init_agents()
+        self.is_over = False
 
     def init_agents(self):
         def _pop_random_element(lst):
@@ -24,7 +26,10 @@ class Game:
             for _ in range(self.nb_agents)
         ]
 
+    def iterate(self):
+        pass
+
 
 if __name__ == "__main__":
-    myGame = Game(5, 4)
+    my_solver = Solver(5, 4)
     print("blabla")

@@ -23,5 +23,5 @@ source venv/bin/activate
 
 ### run
 ```bash
-python main.py
+python src/main.py
 ```
