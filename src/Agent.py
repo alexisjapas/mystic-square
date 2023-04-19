@@ -1,5 +1,4 @@
 import threading
-import Position
 
 
 class Agent(threading.Thread):
