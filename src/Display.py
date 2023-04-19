@@ -22,41 +22,48 @@ class Display:
             print(mid_size)
 
         # set screen size
-        self.offset_x = self.board_size + mid_size
-        self.screen = pygame.display.set_mode((2 * self.board_size + mid_size, self.board_size))
+        self.offset_col = self.board_size + mid_size
+        self.screen = pygame.display.set_mode(
+            (2 * self.board_size + mid_size, self.board_size)
+        )
 
         # init boards
         self.board_agents = self.init_board()
-        self.board_target = self.init_board(self.offset_x)
+        self.board_target = self.init_board(self.offset_col)
 
-    def init_board(self, offset_x=0):
+    def init_board(self, offset_col=0):
         # Draw the game board on the screen
         return [
             [
                 pygame.Rect(
-                    offset_x + x * self.cell_size,
-                    y * self.cell_size,
+                    offset_col + col * self.cell_size,
+                    row * self.cell_size,
                     self.cell_size,
                     self.cell_size,
                 )
-                for x in range(self.solver.grid_dim)
+                for row in range(self.solver.grid_dim)
             ]
-            for y in range(self.solver.grid_dim)
+            for col in range(self.solver.grid_dim)
         ]
 
     def draw_board(self, board):
-        for y in range(self.solver.grid_dim):
-            for x in range(self.solver.grid_dim):
-                pygame.draw.rect(self.screen, (0, 0, 0), board[x][y], 1)
+        for col in range(self.solver.grid_dim):
+            for row in range(self.solver.grid_dim):
+                pygame.draw.rect(self.screen, (0, 0, 0), board[col][row], 1)
 
     def draw_agents(self, mode="current"):
-        pass
+        assert mode == "current" or mode == "target"
+        board = self.board_agents if mode == "current" else self.board_target
+        for agent in self.solver.agents:
+            pos = agent.current_pos if mode == "current" else agent.target_pos
+            pygame.draw.rect(self.screen, agent.color, board[pos[0]][pos[1]], 0)
+
 
     def update(self):
         # Update the game display based on the game state
         self.screen.fill(self.bg_color)
+        self.draw_agents("current")
+        self.draw_agents("target")
         self.draw_board(self.board_agents)
         self.draw_board(self.board_target)
-        self.draw_agents()
-        self.draw_agents()
         pygame.display.flip()
