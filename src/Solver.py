@@ -17,14 +17,14 @@ class Solver:
             return lst.pop(random_index)
 
         start_positions = [
-            (x, y) for x in range(self.grid_dim) for y in range(self.grid_dim)
+            (col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)
         ]
         target_positions = start_positions.copy()
         return [
             Agent(
                 _pop_random_element(start_positions),
                 _pop_random_element(target_positions),
-                (randint(0, 255), randint(0, 255), randint(0, 255)),
+                (randint(0, 255), randint(0, 255), randint(0, 255))
             )
             for _ in range(self.nb_agents)
         ]
