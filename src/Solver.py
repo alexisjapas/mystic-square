@@ -16,7 +16,9 @@ class Solver:
             random_index = randrange(len(lst))
             return lst.pop(random_index)
 
-        start_positions = [(x, y) for x in range(self.grid_dim) for y in range(self.grid_dim)]
+        start_positions = [
+            (x, y) for x in range(self.grid_dim) for y in range(self.grid_dim)
+        ]
         target_positions = start_positions.copy()
         return [
             Agent(

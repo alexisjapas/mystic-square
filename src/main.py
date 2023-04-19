@@ -36,4 +36,4 @@ def main(grid_dim, nb_agents):
 
 
 if __name__ == "__main__":
-    main(27, 0)
+    main(8, 0)
