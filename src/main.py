@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 from Solver import Solver
 from Display import Display
@@ -7,8 +8,9 @@ from Display import Display
 def main(grid_dim, nb_agents):
     # initialize the pygame environment
     pygame.init()
+    clock = pygame.time.Clock()
 
-    # initialize back/front ends
+    # initialize front end
     display = Display()
 
     # start the solver
@@ -17,15 +19,21 @@ def main(grid_dim, nb_agents):
 
     # solver loop
     while not solver.is_over:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
         # update the solver state
         solver.iterate()
 
         # update the diplay
         display.update()
+        clock.tick(60)
 
     # quit pygame and clean up resources
     pygame.quit()
 
 
 if __name__ == "__main__":
-    main(5, 4)
+    main(7, 0)

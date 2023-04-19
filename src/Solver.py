@@ -5,6 +5,7 @@ from Agent import Agent
 
 class Solver:
     def __init__(self, grid_dim, nb_agents):
+        assert nb_agents < grid_dim * grid_dim
         self.grid_dim = grid_dim
         self.nb_agents = nb_agents
         self.agents = self.init_agents()
