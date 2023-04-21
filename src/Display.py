@@ -7,7 +7,7 @@ class Display:
         self.bg_color = bg_color
         pygame.display.set_caption("Mystic Square Solver")
 
-    def start_solver(self, solver):
+    def init_game_display(self, solver):
         # initialize and prepare the solver
         self.solver = solver
 
