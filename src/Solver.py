@@ -16,21 +16,22 @@ class Solver:
             random_index = randrange(len(lst))
             return lst.pop(random_index)
 
-        start_positions = [
-            (col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)
-        ]
+        start_positions = [(col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)]
         target_positions = start_positions.copy()
         return [
             Agent(
                 _pop_random_element(start_positions),
                 _pop_random_element(target_positions),
-                (randint(0, 255), randint(0, 255), randint(0, 255))
+                (randint(0, 255), randint(0, 255), randint(0, 255)),
             )
             for _ in range(self.nb_agents)
         ]
 
     def iterate(self):
-        pass
+        for agent in self.agents:
+            direction = agent.compute_path_to_target()
+            if direction:
+                agent.move(direction)
 
 
 if __name__ == "__main__":

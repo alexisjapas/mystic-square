@@ -23,9 +23,7 @@ class Display:
 
         # set screen size
         self.offset_col = self.board_size + mid_size
-        self.screen = pygame.display.set_mode(
-            (2 * self.board_size + mid_size, self.board_size)
-        )
+        self.screen = pygame.display.set_mode((2 * self.board_size + mid_size, self.board_size))
 
         # init boards
         self.board_agents = self.init_board()
@@ -57,7 +55,6 @@ class Display:
         for agent in self.solver.agents:
             pos = agent.current_pos if mode == "current" else agent.target_pos
             pygame.draw.rect(self.screen, agent.color, board[pos[0]][pos[1]], 0)
-
 
     def update(self):
         # Update the game display based on the game state

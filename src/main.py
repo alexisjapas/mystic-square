@@ -29,11 +29,11 @@ def main(grid_dim, nb_agents):
 
         # update the diplay
         display.update()
-        clock.tick(60)
+        clock.tick(1)
 
     # quit pygame and clean up resources
     pygame.quit()
 
 
 if __name__ == "__main__":
-    main(8, 2)
+    main(8, 15)
