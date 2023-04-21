@@ -1,5 +1,7 @@
 import pygame
 
+from Solver import Solver
+
 
 class Display:
     def __init__(self, bg_color=(255, 255, 255)):
@@ -23,9 +25,7 @@ class Display:
 
         # set screen size
         self.offset_col = self.board_size + mid_size
-        self.screen = pygame.display.set_mode(
-            (2 * self.board_size + mid_size, self.board_size)
-        )
+        self.screen = pygame.display.set_mode((2 * self.board_size + mid_size, self.board_size))
 
         # init boards
         self.board_agents = self.init_board()
@@ -58,6 +58,20 @@ class Display:
             pos = agent.current_pos if mode == "current" else agent.target_pos
             pygame.draw.rect(self.screen, agent.color, board[pos[0]][pos[1]], 0)
 
+    def draw_simulation_info(self):
+        font = pygame.font.Font(None, 20)
+        text_surface = font.render(f"Grid Size: {self.solver.grid_dim} x {self.solver.grid_dim}", True, (0, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (700, 250)
+        self.screen.blit(text_surface, text_rect)
+        text_surface = font.render(f"Number Of Agents: {int(self.solver.nb_agents)}", True, (0, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (700, 300)
+        self.screen.blit(text_surface, text_rect)
+        text_surface = font.render(f"Number Of Moves:", True, (0, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (700, 350)
+        self.screen.blit(text_surface, text_rect)
 
     def update(self):
         # Update the game display based on the game state
@@ -66,4 +80,5 @@ class Display:
         self.draw_agents("target")
         self.draw_board(self.board_agents)
         self.draw_board(self.board_target)
+        self.draw_simulation_info()
         pygame.display.flip()
