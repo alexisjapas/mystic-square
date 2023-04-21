@@ -23,9 +23,7 @@ class Display:
 
         # set screen size
         self.offset_col = self.board_size + mid_size
-        self.screen = pygame.display.set_mode(
-            (2 * self.board_size + mid_size, self.board_size)
-        )
+        self.screen = pygame.display.set_mode((2 * self.board_size + mid_size, self.board_size))
 
         # init boards
         self.board_agents = self.init_board()

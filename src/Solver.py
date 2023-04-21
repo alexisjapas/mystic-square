@@ -1,4 +1,5 @@
 from random import randrange, randint
+import threading
 
 from Agent import Agent
 
@@ -8,6 +9,7 @@ class Solver:
         assert nb_agents < grid_dim * grid_dim
         self.grid_dim = grid_dim
         self.nb_agents = nb_agents
+        Agent.grid_dim = grid_dim
         self.agents = self.init_agents()
 
     def init_agents(self):
@@ -15,15 +17,22 @@ class Solver:
             random_index = randrange(len(lst))
             return lst.pop(random_index)
 
-        start_positions = [
-            (col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)
-        ]
+        # generate random positions
+        start_positions = [(col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)]
         target_positions = start_positions.copy()
+
+        # init shared memory
+        lock = threading.Lock()
+        positions = {}
+
+        # generate agents
         return [
             Agent(
                 _pop_random_element(start_positions),
                 _pop_random_element(target_positions),
                 (randint(0, 255), randint(0, 255), randint(0, 255)),
+                positions,
+                lock,
             )
             for _ in range(self.nb_agents)
         ]
