@@ -9,14 +9,15 @@ class Solver:
         self.grid_dim = grid_dim
         self.nb_agents = nb_agents
         self.agents = self.init_agents()
-        self.is_over = False
 
     def init_agents(self):
         def _pop_random_element(lst):
             random_index = randrange(len(lst))
             return lst.pop(random_index)
 
-        start_positions = [(col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)]
+        start_positions = [
+            (col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)
+        ]
         target_positions = start_positions.copy()
         return [
             Agent(
@@ -27,13 +28,17 @@ class Solver:
             for _ in range(self.nb_agents)
         ]
 
-    def iterate(self):
+    def start_agents(self):
         for agent in self.agents:
-            direction = agent.compute_path_to_target()
-            if direction:
-                agent.move(direction)
+            agent.start()
 
+    def kill_agents(self):
+        for agent in self.agents:
+            agent.die()
 
-if __name__ == "__main__":
-    my_solver = Solver(5, 4)
-    print("blabla")
+    def is_over(self):
+        over = True
+        for agent in self.agents:
+            if not agent.has_reach_target():
+                over = False
+        return over
