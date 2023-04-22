@@ -11,16 +11,13 @@
     # Main branch of the repository to speed up incremental diff
 
     main_branch: # optional, default is main
-    # (--quiet) Don't emit non-error messages to stderr. Errors are still emitted; silence 
-  those with 2>/dev/null
+    # (--quiet) Don't emit non-error messages to stderr. Errors are still emitted; silence those with 2>/dev/null
 
     quiet_mode: # optional, default is false
     # (--diff) Don't write the files back, just output a diff for each file on stdout.
 
     print_diff_mode: # optional, default is false
-    # (--check) Don't write the files back, just return the status. Return code 0 means nothing 
-  would change. Return code 1 means some files would be reformatted. Return code 123 means
-  there was an internal error.
+    # (--check) Don't write the files back, just return the status. Return code 0 means nothing would change. Return code 1 means some files would be reformatted. Return code 123 means there was an internal error.
 
     check_mode: # optional, default is false
     # Turn on if you only want to check changed files instead of all files.
