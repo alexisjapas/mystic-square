@@ -23,7 +23,7 @@ class Solver:
 
         # init shared memory
         lock = threading.Lock()
-        positions = {}
+        self.positions = {"moves_count": 0}
 
         # generate agents
         return [
@@ -31,7 +31,7 @@ class Solver:
                 _pop_random_element(start_positions),
                 _pop_random_element(target_positions),
                 (randint(0, 255), randint(0, 255), randint(0, 255)),
-                positions,
+                self.positions,
                 lock,
             )
             for _ in range(self.nb_agents)

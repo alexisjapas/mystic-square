@@ -57,7 +57,7 @@ class Agent(threading.Thread):
                 break
 
             # logic
-            sleep(0.001)
+            sleep(0.0001)
             direction = self.compute_path_to_target()
             if direction:
                 with self.lock:
@@ -65,6 +65,7 @@ class Agent(threading.Thread):
                     if new_position not in self.positions.values() and self.is_position_valid(new_position):
                         self.positions[self.id] = new_position
                         self.move(new_position)
+                        self.positions["moves_count"] += 1
 
     def die(self):
         self._stop_event.set()

@@ -1,7 +1,5 @@
 import pygame
 
-from Solver import Solver
-
 
 class Display:
     def __init__(self, bg_color=(255, 255, 255)):
@@ -58,22 +56,26 @@ class Display:
             pos = agent.current_pos if mode == "current" else agent.target_pos
             pygame.draw.rect(self.screen, agent.color, board[pos[0]][pos[1]], 0)
 
-    def draw_simulation_info(self):
-        font = pygame.font.Font(None, 20)
-        text_rect = pygame.Rect(0, 0, 0, 0) # Create a Rect object once and reuse it
-
-        text_surface = font.render(f"Grid Size: {self.solver.grid_dim} x {self.solver.grid_dim}", True, (0, 0, 0))
-        text_rect.center = (700, 250)
+    def draw_text(self, font, text, center_col, center_row, color=(0, 0, 0)):
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (center_col, center_row)
         self.screen.blit(text_surface, text_rect)
 
-        text_surface = font.render(f"Number Of Agents: {int(self.solver.nb_agents)}", True, (0, 0, 0))
-        text_rect.center = (700, 300)
-        self.screen.blit(text_surface, text_rect)
+    def draw_simulation_info(self, offset_col=700):
+        font = pygame.font.Font(None, 24)
 
-        text_surface = font.render(f"Number Of Moves:", True, (0, 0, 0))
-        text_rect.center = (700, 350)
-        self.screen.blit(text_surface, text_rect)
+        # grid size
+        self.draw_text(font, "GRID SIZE", offset_col, 10)
+        self.draw_text(font, f"{self.solver.grid_dim} x {self.solver.grid_dim}", offset_col, 30)
 
+        # number of agents
+        self.draw_text(font, "NUMBER OF AGENTS", offset_col, 70)
+        self.draw_text(font, f"{int(self.solver.nb_agents)}", offset_col, 90)
+
+        # number of moves
+        self.draw_text(font, "MOVES COUNT", offset_col, 130)
+        self.draw_text(font, f"{self.solver.positions['moves_count']}", offset_col, 150)
 
     def update(self):
         # Update the game display based on the game state
