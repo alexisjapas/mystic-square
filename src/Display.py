@@ -9,7 +9,7 @@ class Display:
         self.bg_color = bg_color
         pygame.display.set_caption("Mystic Square Solver")
 
-    def start_solver(self, solver):
+    def init_game_display(self, solver):
         # initialize and prepare the solver
         self.solver = solver
 
@@ -60,18 +60,20 @@ class Display:
 
     def draw_simulation_info(self):
         font = pygame.font.Font(None, 20)
+        text_rect = pygame.Rect(0, 0, 0, 0) # Create a Rect object once and reuse it
+
         text_surface = font.render(f"Grid Size: {self.solver.grid_dim} x {self.solver.grid_dim}", True, (0, 0, 0))
-        text_rect = text_surface.get_rect()
         text_rect.center = (700, 250)
         self.screen.blit(text_surface, text_rect)
+
         text_surface = font.render(f"Number Of Agents: {int(self.solver.nb_agents)}", True, (0, 0, 0))
-        text_rect = text_surface.get_rect()
         text_rect.center = (700, 300)
         self.screen.blit(text_surface, text_rect)
+
         text_surface = font.render(f"Number Of Moves:", True, (0, 0, 0))
-        text_rect = text_surface.get_rect()
         text_rect.center = (700, 350)
         self.screen.blit(text_surface, text_rect)
+
 
     def update(self):
         # Update the game display based on the game state
