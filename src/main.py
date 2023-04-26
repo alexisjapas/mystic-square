@@ -48,4 +48,4 @@ def main(grid_dim, nb_agents, seed=0):
 
 
 if __name__ == "__main__":
-    main(5, 21, seed=10)
+    main(5, 1, seed=10)

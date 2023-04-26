@@ -9,18 +9,21 @@ class Agent(threading.Thread):
     grid_dim: ClassVar[int]
 
     def __init__(
-        self, _id, current_pos, target_pos, color, positions, stats, queues, lock
+        self, _id, current_pos, target_pos, color, positions, stats, heatmap, lock
     ):
         super().__init__()
-        self.id = _id
+        self._id = _id
         Agent.n_agents += 1
         # pos = (col, row) due to PyGame conventions
         self.current_pos = current_pos
         self.target_pos = target_pos
+        self.distance = sum(
+            [abs(self.target_pos[i] - self.current_pos[i]) for i in range(2)]
+        )
         self.color = color
         self.positions = positions
         self.stats = stats
-        self.queues = queues
+        self.heatmap = heatmap
         self.lock = lock
         self.err_rate = 0.1
         self._stop_event = threading.Event()
@@ -74,11 +77,14 @@ class Agent(threading.Thread):
         while True:
             # death
             if self._stop_event.is_set():
-                print(f"Agent {self.id} died :(")
+                print(f"Agent {self._id} died :(")
                 break
 
             # logic
-            sleep(0.0001)
+            sleep(1)
+            self.distance = sum(
+                [abs(self.target_pos[i] - self.current_pos[i]) for i in range(2)]
+            )
             direction = self.compute_path_to_target()
             if direction:
                 with self.lock:
@@ -86,12 +92,14 @@ class Agent(threading.Thread):
                         self.current_pos[i] + direction[i]
                         for i in range(len(direction))
                     )
-                    if new_position not in self.positions and self.is_position_valid(
-                        new_position
-                    ):
-                        self.positions[self.id] = new_position
-                        self.move(new_position)
-                        self.stats["moves_count"] += 1
+                    if self.is_position_valid(new_position):
+                        if new_position not in self.positions:
+                            self.positions[self._id] = new_position
+                            self.move(new_position)
+                            self.heatmap[self._id] = 0
+                            self.stats["moves_count"] += 1
+                        else:
+                            self.heatmap[self.positions.index(new_position)] += 1
 
     def die(self):
         self._stop_event.set()

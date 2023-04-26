@@ -58,6 +58,22 @@ class Display:
             pos = agent.current_pos if mode == "current" else agent.target_pos
             pygame.draw.rect(self.screen, agent.color, board[pos[0]][pos[1]], 0)
 
+    def draw_distances(self):
+        board = self.board_target  # TODO create distance board
+        for agent in self.solver.agents:
+            pos = agent.current_pos
+            print(agent.distance)
+            pygame.draw.rect(
+                self.screen,
+                (
+                    255 - agent.distance * 10,
+                    255 - agent.distance * 10,
+                    255 - agent.distance * 10,
+                ),
+                board[pos[0]][pos[1]],
+                0,
+            )
+
     def draw_text(self, font, text, center_col, center_row, color=(0, 0, 0)):
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
@@ -85,7 +101,7 @@ class Display:
         # Update the game display based on the game state
         self.screen.fill(self.bg_color)
         self.draw_agents("current")
-        self.draw_agents("target")
+        self.draw_distances()
         self.draw_board(self.board_agents)
         self.draw_board(self.board_target)
         self.draw_simulation_info()

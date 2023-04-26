@@ -1,6 +1,5 @@
 from random import randrange, randint
 import threading
-from queue import Queue
 
 
 from Agent import Agent
@@ -31,7 +30,7 @@ class Solver:
             _pop_random_element(start_positions) for _ in range(self.nb_agents)
         ]
         self.stats = {"moves_count": 0}
-        self.queues = [Queue() for _ in range(self.nb_agents)]
+        self.heatmap = [0 for _ in range(self.nb_agents)]
 
         # generate agents
         return [
@@ -42,7 +41,7 @@ class Solver:
                 (randint(0, 255), randint(0, 255), randint(0, 255)),
                 self.positions,
                 self.stats,
-                self.queues,
+                self.heatmap,
                 lock,
             )
             for i in range(self.nb_agents)
