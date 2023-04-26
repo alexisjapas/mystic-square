@@ -23,7 +23,9 @@ class Display:
 
         # set screen size
         self.offset_col = self.board_size + mid_size
-        self.screen = pygame.display.set_mode((2 * self.board_size + mid_size, self.board_size))
+        self.screen = pygame.display.set_mode(
+            (2 * self.board_size + mid_size, self.board_size)
+        )
 
         # init boards
         self.board_agents = self.init_board()
@@ -67,7 +69,9 @@ class Display:
 
         # grid size
         self.draw_text(font, "GRID SIZE", offset_col, 10)
-        self.draw_text(font, f"{self.solver.grid_dim} x {self.solver.grid_dim}", offset_col, 30)
+        self.draw_text(
+            font, f"{self.solver.grid_dim} x {self.solver.grid_dim}", offset_col, 30
+        )
 
         # number of agents
         self.draw_text(font, "NUMBER OF AGENTS", offset_col, 70)
@@ -75,7 +79,7 @@ class Display:
 
         # number of moves
         self.draw_text(font, "MOVES COUNT", offset_col, 130)
-        self.draw_text(font, f"{self.solver.positions['moves_count']}", offset_col, 150)
+        self.draw_text(font, f"{self.solver.stats['moves_count']}", offset_col, 150)
 
     def update(self):
         # Update the game display based on the game state
