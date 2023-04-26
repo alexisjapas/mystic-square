@@ -3,7 +3,7 @@ import pygame
 
 class Display:
     def __init__(self, bg_color=(255, 255, 255)):
-        self.screen_size = (1400, 600)
+        self.screen_size = 1000
         self.bg_color = bg_color
         pygame.display.set_caption("Mystic Square Solver")
 
@@ -12,32 +12,33 @@ class Display:
         self.solver = solver
 
         # compute cells and board size
-        self.cell_size = (self.screen_size[0] - 200) // (solver.grid_dim * 2)
+        self.cell_size = (self.screen_size - 200) // (solver.grid_dim * 2)
         self.board_size = solver.grid_dim * self.cell_size
 
         # change screen size if cells dont fill it
         mid_size = 200
-        if (self.screen_size[0] - mid_size) % solver.grid_dim:
-            mid_size -= (self.screen_size[0] - 200) % solver.grid_dim
+        if (self.screen_size - mid_size) % solver.grid_dim:
+            mid_size -= (self.screen_size - 200) % solver.grid_dim
             print(mid_size)
 
         # set screen size
-        self.offset_col = self.board_size + mid_size
-        self.screen = pygame.display.set_mode(
-            (2 * self.board_size + mid_size, self.board_size)
-        )
+        self.offset_col = self.screen_size - self.board_size
+        self.offset_row = self.screen_size - self.board_size
+        self.screen = pygame.display.set_mode((self.screen_size, self.screen_size))
 
         # init boards
-        self.board_agents = self.init_board()
-        self.board_target = self.init_board(self.offset_col)
+        self.board_agents = self.init_board(offset_col=0, offset_row=mid_size//2)
+        self.board_target = self.init_board(offset_col=self.offset_col, offset_row=mid_size//2)
+        self.board_heatmap = self.init_board(offset_col=0, offset_row=self.offset_row)
+        self.board_distances = self.init_board(offset_col=self.offset_col, offset_row=self.offset_row)
 
-    def init_board(self, offset_col=0):
+    def init_board(self, offset_col=0, offset_row=0):
         # Draw the game board on the screen
         return [
             [
                 pygame.Rect(
                     offset_col + col * self.cell_size,
-                    row * self.cell_size,
+                    offset_row + row * self.cell_size,
                     self.cell_size,
                     self.cell_size,
                 )
@@ -59,20 +60,25 @@ class Display:
             pygame.draw.rect(self.screen, agent.color, board[pos[0]][pos[1]], 0)
 
     def draw_distances(self):
-        board = self.board_target  # TODO create distance board
+        board = self.board_distances
         for agent in self.solver.agents:
             pos = agent.current_pos
-            print(agent.distance)
+            normalized_distance = 255 * agent.distance / (2 * self.solver.grid_dim)
             pygame.draw.rect(
                 self.screen,
                 (
-                    255 - agent.distance * 10,
-                    255 - agent.distance * 10,
-                    255 - agent.distance * 10,
+                    255,
+                    255 - normalized_distance,
+                    255 - normalized_distance,
                 ),
                 board[pos[0]][pos[1]],
                 0,
             )
+
+    def draw_heatmap(self):
+        board = self.board_distances
+
+
 
     def draw_text(self, font, text, center_col, center_row, color=(0, 0, 0)):
         text_surface = font.render(text, True, color)
@@ -80,29 +86,35 @@ class Display:
         text_rect.center = (center_col, center_row)
         self.screen.blit(text_surface, text_rect)
 
-    def draw_simulation_info(self, offset_col=700):
+    def draw_simulation_info(self):
         font = pygame.font.Font(None, 24)
 
+        offset_col = self.screen_size // 2
+
         # grid size
-        self.draw_text(font, "GRID SIZE", offset_col, 10)
+        self.draw_text(font, "GRID SIZE", offset_col, 50)
         self.draw_text(
-            font, f"{self.solver.grid_dim} x {self.solver.grid_dim}", offset_col, 30
+            font, f"{self.solver.grid_dim} x {self.solver.grid_dim}", offset_col, 70
         )
 
         # number of agents
-        self.draw_text(font, "NUMBER OF AGENTS", offset_col, 70)
-        self.draw_text(font, f"{int(self.solver.nb_agents)}", offset_col, 90)
+        self.draw_text(font, "NUMBER OF AGENTS", offset_col, 110)
+        self.draw_text(font, f"{int(self.solver.nb_agents)}", offset_col, 130)
 
         # number of moves
-        self.draw_text(font, "MOVES COUNT", offset_col, 130)
-        self.draw_text(font, f"{self.solver.stats['moves_count']}", offset_col, 150)
+        self.draw_text(font, "MOVES COUNT", offset_col, 170)
+        self.draw_text(font, f"{self.solver.stats['moves_count']}", offset_col, 190)
 
     def update(self):
         # Update the game display based on the game state
         self.screen.fill(self.bg_color)
         self.draw_agents("current")
+        self.draw_agents("target")
         self.draw_distances()
+        self.draw_heatmap()
         self.draw_board(self.board_agents)
         self.draw_board(self.board_target)
+        self.draw_board(self.board_distances)
+        self.draw_board(self.board_heatmap)
         self.draw_simulation_info()
         pygame.display.flip()
