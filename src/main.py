@@ -41,11 +41,12 @@ def main(grid_dim, nb_agents, seed=0):
     display.update()
 
     # stats print
-    print(f"Moves count: {solver.positions['moves_count']}")
+    print(f"Moves count: {solver.stats['moves_count']}")
 
     # quit pygame and clean up resources
     pygame.quit()
 
 
 if __name__ == "__main__":
-    main(5, 19, seed=0)
+    for i in range(20):
+        main(5, 20, seed=i * 7)
