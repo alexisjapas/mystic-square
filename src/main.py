@@ -48,4 +48,5 @@ def main(grid_dim, nb_agents, seed=0):
 
 
 if __name__ == "__main__":
-    main(6, 8, seed=0)
+    for i in range(20):
+        main(5, 18, seed=i * 10)

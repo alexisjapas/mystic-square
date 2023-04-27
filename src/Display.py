@@ -27,10 +27,14 @@ class Display:
         self.screen = pygame.display.set_mode((self.screen_size, self.screen_size))
 
         # init boards
-        self.board_agents = self.init_board(offset_col=0, offset_row=mid_size//2)
-        self.board_target = self.init_board(offset_col=self.offset_col, offset_row=mid_size//2)
+        self.board_agents = self.init_board(offset_col=0, offset_row=mid_size // 2)
+        self.board_target = self.init_board(
+            offset_col=self.offset_col, offset_row=mid_size // 2
+        )
         self.board_heatmap = self.init_board(offset_col=0, offset_row=self.offset_row)
-        self.board_distances = self.init_board(offset_col=self.offset_col, offset_row=self.offset_row)
+        self.board_distances = self.init_board(
+            offset_col=self.offset_col, offset_row=self.offset_row
+        )
 
     def init_board(self, offset_col=0, offset_row=0):
         # Draw the game board on the screen
@@ -54,12 +58,16 @@ class Display:
 
         font = pygame.font.Font(None, 24)
 
-        if ((board_name == "Agents Positions") or (board_name == "Agents blocking Heatmap")):
+        if (board_name == "Agents Positions") or (
+            board_name == "Agents blocking Heatmap"
+        ):
             title_pos = (int(self.board_size / 2), (board[0][0])[1] - 15)
         else:
-            title_pos = (self.screen_size - int(self.board_size / 2), (board[0][0])[1] - 15)
+            title_pos = (
+                self.screen_size - int(self.board_size / 2),
+                (board[0][0])[1] - 15,
+            )
         self.draw_text(font, f"{board_name}", title_pos[0], title_pos[1])
-  
 
     def draw_agents(self, mode="current"):
         assert mode == "current" or mode == "target"
@@ -88,8 +96,8 @@ class Display:
         board = self.board_heatmap
         for agent in self.solver.agents:
             pos = agent.current_pos
-            weight = 3 * agent.heatmap[agent._id]
-            if (weight <= 255):
+            weight = 3 * len(agent.heatmap[agent._id])
+            if weight <= 255:
                 color = (255, 255 - (weight), 255 - (weight))
             else:
                 # cell turns black if the agent occupying it has been blocking others for too many iterations.
@@ -99,7 +107,7 @@ class Display:
                 color,
                 board[pos[0]][pos[1]],
                 0,
-            ) 
+            )
 
     def draw_text(self, font, text, center_col, center_row, color=(0, 0, 0)):
         text_surface = font.render(text, True, color)
@@ -109,22 +117,45 @@ class Display:
 
     def draw_simulation_info(self):
         font = pygame.font.Font(None, 18)
-        text_center_position = int(self.screen_size*2.3/4)
+        text_center_position = int(self.screen_size * 2.3 / 4)
         offset_col = self.screen_size // 2
 
         # grid size
-        self.draw_text(font, "GRID SIZE", offset_col, int(text_center_position-0.15*text_center_position))
         self.draw_text(
-            font, f"{self.solver.grid_dim} x {self.solver.grid_dim}", offset_col, int(text_center_position-0.1*text_center_position)
+            font,
+            "GRID SIZE",
+            offset_col,
+            int(text_center_position - 0.15 * text_center_position),
+        )
+        self.draw_text(
+            font,
+            f"{self.solver.grid_dim} x {self.solver.grid_dim}",
+            offset_col,
+            int(text_center_position - 0.1 * text_center_position),
         )
 
         # number of agents
         self.draw_text(font, "NUMBER OF AGENTS", offset_col, text_center_position)
-        self.draw_text(font, f"{int(self.solver.nb_agents)}", offset_col, int(text_center_position+0.05*text_center_position))
+        self.draw_text(
+            font,
+            f"{int(self.solver.nb_agents)}",
+            offset_col,
+            int(text_center_position + 0.05 * text_center_position),
+        )
 
         # number of moves
-        self.draw_text(font, "MOVES COUNT", offset_col, int(text_center_position+0.15*text_center_position))
-        self.draw_text(font, f"{self.solver.stats['moves_count']}", offset_col, int(text_center_position+0.2*text_center_position))
+        self.draw_text(
+            font,
+            "MOVES COUNT",
+            offset_col,
+            int(text_center_position + 0.15 * text_center_position),
+        )
+        self.draw_text(
+            font,
+            f"{self.solver.stats['moves_count']}",
+            offset_col,
+            int(text_center_position + 0.2 * text_center_position),
+        )
 
     def update(self):
         # Update the game display based on the game state

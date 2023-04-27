@@ -30,7 +30,7 @@ class Solver:
             _pop_random_element(start_positions) for _ in range(self.nb_agents)
         ]
         self.stats = {"moves_count": 0}
-        self.heatmap = [0 for _ in range(self.nb_agents)]
+        self.heatmap = [[] for _ in range(self.nb_agents)]
 
         # generate agents
         return [
