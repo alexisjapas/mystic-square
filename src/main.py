@@ -16,9 +16,27 @@ def main(grid_dim, nb_agents, seed=0):
 
     # initialize front end
     display = Display()
+    display.init_menu_display()
+
+    # menu loop
+    display.in_menu = True
+    while display.in_menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        # update the diplay
+        display.update_menu()
+        clock.tick(60)
+
+    pygame.display.quit()
 
     # start the solver
-    solver = Solver(grid_dim, nb_agents)
+    solver = Solver(
+        display.grid_size_selector.get_value()[0][1],
+        display.nb_agents_selector.get_value()[0][1],
+    )
     display.init_game_display(solver)
     solver.start_agents()
 
@@ -31,14 +49,14 @@ def main(grid_dim, nb_agents, seed=0):
                 sys.exit()
 
         # update the diplay
-        display.update()
+        display.update_game()
         clock.tick(60)
 
     # kill agents
     solver.kill_agents()
 
     # final update
-    display.update()
+    display.update_game()
 
     # stats print
     print(f"Moves count: {solver.stats['moves_count']}")

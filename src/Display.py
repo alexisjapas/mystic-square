@@ -1,4 +1,5 @@
 import pygame
+import pygame_menu
 
 
 class Display:
@@ -6,6 +7,40 @@ class Display:
         self.screen_size = 800
         self.bg_color = bg_color
         pygame.display.set_caption("Mystic Square Solver")
+
+    def init_menu_display(self):
+        self.in_menu = True
+        self.menu_size = 600
+        self.menu_screen = pygame.display.set_mode((self.menu_size, self.menu_size))
+
+    def draw_menu(self):
+        def handle_selector_change(value, selector):
+            self.max_agents = (value[0][1]) * (value[0][1]) - 1
+            self.nb_agents_selector.update_items([(f"{i+1}", i + 1) for i in range(self.max_agents)])
+
+        self.menu_screen.fill(self.bg_color)
+        self.max_agents = 8
+        self.menu = pygame_menu.Menu(
+            "Edit Simulation Parameters",
+            self.menu_size,
+            self.menu_size,
+            theme=pygame_menu.themes.THEME_DEFAULT,
+        )
+        self.grid_size_selector = self.menu.add.selector(
+            "Grid Size: ",
+            [(f"{i} x {i}", i) for i in range(3, 16)],
+            onchange=handle_selector_change,
+        )
+        self.nb_agents_selector = self.menu.add.selector(
+            "Number Of Agents: ", [(f"{i+1}", i + 1) for i in range(self.max_agents)]
+        )
+        self.menu.add.vertical_margin(50)
+
+        def on_start_button_click():
+            self.in_menu = False
+            self.menu.disable()
+
+        self.start_button = self.menu.add.button("Launch Simulation", on_start_button_click)
 
     def init_game_display(self, solver):
         # initialize and prepare the solver
@@ -157,7 +192,7 @@ class Display:
             int(text_center_position + 0.2 * text_center_position),
         )
 
-    def update(self):
+    def update_game(self):
         # Update the game display based on the game state
         self.screen.fill(self.bg_color)
         self.draw_agents("current")
@@ -170,3 +205,7 @@ class Display:
         self.draw_board(self.board_heatmap, "Agents blocking heatmap")
         self.draw_simulation_info()
         pygame.display.flip()
+
+    def update_menu(self):
+        self.draw_menu()
+        self.menu.mainloop(self.menu_screen)
