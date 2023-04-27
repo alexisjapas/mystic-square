@@ -55,9 +55,9 @@ class Display:
         font = pygame.font.Font(None, 24)
 
         if ((board_name == "Agents Positions") or (board_name == "Agents blocking Heatmap")):
-            title_pos = (int(self.board_size / 2), (board[0][0])[1] - int(self.cell_size/5))
+            title_pos = (int(self.board_size / 2), (board[0][0])[1] - 15)
         else:
-            title_pos = (self.screen_size - int(self.board_size / 2), (board[0][0])[1] - int(self.cell_size/5))
+            title_pos = (self.screen_size - int(self.board_size / 2), (board[0][0])[1] - 15)
         self.draw_text(font, f"{board_name}", title_pos[0], title_pos[1])
   
 
