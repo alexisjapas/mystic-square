@@ -81,7 +81,6 @@ class Agent(threading.Thread):
                 break
 
             # logic
-            sleep(1)
             self.distance = sum(
                 [abs(self.target_pos[i] - self.current_pos[i]) for i in range(2)]
             )
@@ -100,6 +99,7 @@ class Agent(threading.Thread):
                             self.stats["moves_count"] += 1
                         else:
                             self.heatmap[self.positions.index(new_position)] += 1
+            sleep(0.1)
 
     def die(self):
         self._stop_event.set()
