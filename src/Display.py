@@ -3,7 +3,7 @@ import pygame
 
 class Display:
     def __init__(self, bg_color=(255, 255, 255)):
-        self.screen_size = 1000
+        self.screen_size = 800
         self.bg_color = bg_color
         pygame.display.set_caption("Mystic Square Solver")
 
@@ -47,14 +47,20 @@ class Display:
             for col in range(self.solver.grid_dim)
         ]
 
-    def draw_board(self, board, grid_name):
+    def draw_board(self, board, board_name):
         for col in range(self.solver.grid_dim):
             for row in range(self.solver.grid_dim):
                 pygame.draw.rect(self.screen, (0, 0, 0), board[col][row], 1)
 
         font = pygame.font.Font(None, 24)
-        title_pos = ((board[2][0])[0] + int(self.cell_size/2), (board[2][0])[1] - int(self.cell_size/5))
-        self.draw_text(font, f"{grid_name}", title_pos[0], title_pos[1])
+
+        print(f"{board_name} : {(board[0][0])[0]}")
+
+        if ((board_name == "Agents Positions") or (board_name == "Agents blocking Heatmap")):
+            title_pos = (int(self.board_size / 2), (board[0][0])[1] - int(self.cell_size/5))
+        else:
+            title_pos = (self.screen_size - int(self.board_size / 2), (board[0][0])[1] - int(self.cell_size/5))
+        self.draw_text(font, f"{board_name}", title_pos[0], title_pos[1])
   
 
     def draw_agents(self, mode="current"):
