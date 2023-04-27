@@ -58,8 +58,8 @@ class Display:
 
         font = pygame.font.Font(None, 24)
 
-        if (board_name == "Agents Positions") or (
-            board_name == "Agents blocking Heatmap"
+        if (board_name == "Agents positions") or (
+            board_name == "Agents blocking heatmap"
         ):
             title_pos = (int(self.board_size / 2), (board[0][0])[1] - 15)
         else:
@@ -116,7 +116,7 @@ class Display:
         self.screen.blit(text_surface, text_rect)
 
     def draw_simulation_info(self):
-        font = pygame.font.Font(None, 18)
+        font = pygame.font.Font(None, 20)
         text_center_position = int(self.screen_size * 2.3 / 4)
         offset_col = self.screen_size // 2
 
@@ -164,9 +164,9 @@ class Display:
         self.draw_agents("target")
         self.draw_distances()
         self.draw_heatmap()
-        self.draw_board(self.board_agents, "Agents Positions")
-        self.draw_board(self.board_target, "Agents Targets")
+        self.draw_board(self.board_agents, "Agents positions")
+        self.draw_board(self.board_target, "Agents targets")
         self.draw_board(self.board_distances, "Agents distance from target")
-        self.draw_board(self.board_heatmap, "Agents blocking Heatmap")
+        self.draw_board(self.board_heatmap, "Agents blocking heatmap")
         self.draw_simulation_info()
         pygame.display.flip()

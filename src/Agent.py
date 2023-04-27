@@ -104,7 +104,7 @@ class Agent(threading.Thread):
             self.distance = sum(
                 [abs(self.target_pos[i] - self.current_pos[i]) for i in range(2)]
             )
-            if len(self.heatmap[self._id]) > 33:
+            if len(self.heatmap[self._id]) > 13:
                 # get urgency
                 # urgency = len(self.heatmap[self._id])
 
@@ -142,7 +142,7 @@ class Agent(threading.Thread):
                             self.current_pos
                         )  # SHARED
 
-            sleep(0.0001)
+            sleep(0.001)
 
     def die(self):
         self._stop_event.set()
