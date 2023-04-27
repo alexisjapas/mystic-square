@@ -54,8 +54,6 @@ class Display:
 
         font = pygame.font.Font(None, 24)
 
-        print(f"{board_name} : {(board[0][0])[0]}")
-
         if ((board_name == "Agents Positions") or (board_name == "Agents blocking Heatmap")):
             title_pos = (int(self.board_size / 2), (board[0][0])[1] - int(self.cell_size/5))
         else:
