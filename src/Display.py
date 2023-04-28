@@ -15,9 +15,12 @@ class Display:
         self.menu_screen = pygame.display.set_mode((self.menu_size, self.menu_size))
 
     def draw_menu(self):
-        def handle_selector_change(value, selector):
+        def _handle_selector_change(value, selector):
+            print(value)
             self.max_agents = (value[0][1]) * (value[0][1]) - 1
-            self.nb_agents_selector.update_items([(f"{i+1}", i + 1) for i in range(self.max_agents)])
+            self.nb_agents_selector.update_items(
+                [(f"{i}", i) for i in range(1, self.max_agents)]
+            )
 
         self.menu_screen.fill(self.bg_color)
         self.max_agents = 8
@@ -30,30 +33,39 @@ class Display:
         self.grid_size_selector = self.menu.add.selector(
             "Grid Size: ",
             [(f"{i} x {i}", i) for i in range(3, 16)],
-            onchange=handle_selector_change,
+            onchange=_handle_selector_change,
         )
         self.nb_agents_selector = self.menu.add.selector(
-            "Number Of Agents: ", [(f"{i+1}", i + 1) for i in range(self.max_agents)]
+            "Number Of Agents: ",
+            [(f"{i}", i) for i in range(1, self.max_agents)],
+            default=5,
         )
         self.nb_simulations_selector = self.menu.add.selector(
-            "Number Of Simulation: ", [(f"{i+1}", i + 1) for i in range(100)]
+            "Number Of Simulation: ",
+            [(f"{i}", i) for i in range(1, 100)],
         )
         self.agents_sleeps_duration_selector = self.menu.add.selector(
-            "Agents Sleep Duration (seconds): ", [(f"{pow(10, -(4-i))}", pow(10, -(4-i))) for i in range(5)]
+            "Agents Sleep Duration (seconds): ",
+            [(f"{pow(10, -(4-i))}", pow(10, -(4 - i))) for i in range(5)],
+        )
+        self.seed = self.menu.add.selector(
+            "Seed: ", [(f"{i}", i) for i in range(2001)], default=42
         )
         self.menu.add.vertical_margin(50)
 
-        def on_start_button_click():
+        def _on_start_button_click():
             self.in_menu = False
             self.menu.disable()
 
-        self.start_button = self.menu.add.button("Launch Simulation", on_start_button_click)
+        self.start_button = self.menu.add.button(
+            "Launch Simulation", _on_start_button_click
+        )
 
-        def on_exit_button_click():
+        def _on_exit_button_click():
             pygame.quit()
             sys.exit()
 
-        self.exit_button = self.menu.add.button("Exit", on_exit_button_click)
+        self.exit_button = self.menu.add.button("Exit", _on_exit_button_click)
 
     def init_game_display(self, solver):
         # initialize and prepare the solver

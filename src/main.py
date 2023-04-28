@@ -22,7 +22,6 @@ def menu(display):
     pygame.display.quit()
 
 
-
 def main():
     # initialize the pygame environment
     pygame.init()
@@ -31,7 +30,7 @@ def main():
     # initialize front end
     display = Display()
 
-    while(True): 
+    while True:
         menu(display)
 
         for i in range(display.nb_simulations_selector.get_value()[0][1]):
@@ -39,14 +38,15 @@ def main():
             seed = random.randint(0, 1000)
             random.seed(seed)
 
-
             # start the solver
             solver = Solver(
                 display.grid_size_selector.get_value()[0][1],
                 display.nb_agents_selector.get_value()[0][1],
             )
             display.init_game_display(solver)
-            solver.start_agents(display.agents_sleeps_duration_selector.get_value()[0][1])
+            solver.start_agents(
+                display.agents_sleeps_duration_selector.get_value()[0][1]
+            )
 
             # solver loop
             while not solver.is_over():
