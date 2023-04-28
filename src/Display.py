@@ -16,10 +16,9 @@ class Display:
 
     def draw_menu(self):
         def _handle_selector_change(value, selector):
-            print(value)
             self.max_agents = (value[0][1]) * (value[0][1]) - 1
             self.nb_agents_selector.update_items(
-                [(f"{i}", i) for i in range(1, self.max_agents)]
+                [(f"{i}", i) for i in range(1, self.max_agents + 1)]
             )
 
         self.menu_screen.fill(self.bg_color)
