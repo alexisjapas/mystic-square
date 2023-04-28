@@ -47,7 +47,8 @@ class Solver:
             for i in range(self.nb_agents)
         ]
 
-    def start_agents(self):
+    def start_agents(self, sleep_duration):
+        Agent.sleep_duration = sleep_duration
         for agent in self.agents:
             agent.start()
 

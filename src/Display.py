@@ -1,5 +1,6 @@
 import pygame
 import pygame_menu
+import sys
 
 
 class Display:
@@ -10,7 +11,7 @@ class Display:
 
     def init_menu_display(self):
         self.in_menu = True
-        self.menu_size = 600
+        self.menu_size = 800
         self.menu_screen = pygame.display.set_mode((self.menu_size, self.menu_size))
 
     def draw_menu(self):
@@ -34,6 +35,12 @@ class Display:
         self.nb_agents_selector = self.menu.add.selector(
             "Number Of Agents: ", [(f"{i+1}", i + 1) for i in range(self.max_agents)]
         )
+        self.nb_simulations_selector = self.menu.add.selector(
+            "Number Of Simulation: ", [(f"{i+1}", i + 1) for i in range(100)]
+        )
+        self.agents_sleeps_duration_selector = self.menu.add.selector(
+            "Agents Sleep Duration (seconds): ", [(f"{pow(10, -(4-i))}", pow(10, -(4-i))) for i in range(5)]
+        )
         self.menu.add.vertical_margin(50)
 
         def on_start_button_click():
@@ -41,6 +48,12 @@ class Display:
             self.menu.disable()
 
         self.start_button = self.menu.add.button("Launch Simulation", on_start_button_click)
+
+        def on_exit_button_click():
+            pygame.quit()
+            sys.exit()
+
+        self.exit_button = self.menu.add.button("Exit", on_exit_button_click)
 
     def init_game_display(self, solver):
         # initialize and prepare the solver
