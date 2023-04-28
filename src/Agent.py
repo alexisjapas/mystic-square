@@ -11,7 +11,16 @@ class Agent(threading.Thread):
     grid_dim: ClassVar[int]
 
     def __init__(
-        self, _id, current_pos, target_pos, color, positions, stats, heatmap, lock
+        self,
+        _id,
+        current_pos,
+        target_pos,
+        color,
+        positions,
+        stats,
+        heatmap,
+        lock,
+        barrier,
     ):
         super().__init__()
         self._id = _id
@@ -27,7 +36,9 @@ class Agent(threading.Thread):
         self.stats = stats
         self.heatmap = heatmap
         self.lock = lock
-        self.err_rate = 0.1
+        self.barrier = barrier
+        self.random_mode = True
+        self.active_mode = False
         self._stop_event = threading.Event()
 
     def has_reach_target(self):
@@ -105,45 +116,70 @@ class Agent(threading.Thread):
             self.distance = sum(
                 [abs(self.target_pos[i] - self.current_pos[i]) for i in range(2)]
             )
-            if len(self.heatmap[self._id]) > 13:
-                # get urgency
-                # urgency = len(self.heatmap[self._id])
 
-                # get unique requests sorted by count
-                counts = Counter(self.heatmap[self._id])
-                sorted_counts = counts.most_common()
-                requests = [r[0] for r in sorted_counts]
-
-                # compute possible positions and add them to solutions
+            if self.random_mode:
+                with self.lock:
+                    if self.stats["random_moves"] < 1:
+                        self.random_mode = False
                 possible_positions = self.get_possible_positions()
-                for p in possible_positions:
-                    if p not in requests:
-                        requests.append(p)
-                requests.reverse()
-                new_position = requests[0]
                 with self.lock:
-                    for p in requests:
-                        if p not in self.positions:
-                            new_position = p
-            else:
-                new_position = self.compute_path_to_target()
-
-            if self.is_position_valid(new_position) and (
-                self.current_pos[0] != new_position[0]
-                or self.current_pos[1] != new_position[1]
-            ):
-                with self.lock:
-                    if new_position not in self.positions:
-                        self.positions[self._id] = new_position  # SHARED
-                        self.move(new_position)
-                        self.heatmap[self._id].clear()  # SHARED
-                        self.stats["moves_count"] += 1  # SHARED
+                    free_positions = [
+                        p for p in possible_positions if p not in self.positions
+                    ]
+                    if free_positions:
+                        new_position = choice(free_positions)
                     else:
-                        self.heatmap[self.positions.index(new_position)].append(
-                            self.current_pos
-                        )  # SHARED
+                        new_position = None
 
-            sleep(Agent.sleep_duration)
+                if new_position:
+                    with self.lock:
+                        self.positions[self._id] = new_position  # shared
+                        self.move(new_position)
+                        self.stats["random_moves"] -= 1  # shared
+                sleep(0.00001)
+            elif not self.active_mode:
+                print(f"Agent {self._id} on duty!")
+                self.active_mode = True
+                self.barrier.wait()
+            else:
+                if len(self.heatmap[self._id]) > 13:
+                    # get urgency
+                    # urgency = len(self.heatmap[self._id])
+
+                    # get unique requests sorted by count
+                    counts = Counter(self.heatmap[self._id])
+                    sorted_counts = counts.most_common()
+                    requests = [r[0] for r in sorted_counts]
+
+                    # compute possible positions and add them to solutions
+                    possible_positions = self.get_possible_positions()
+                    for p in possible_positions:
+                        if p not in requests:
+                            requests.append(p)
+                    requests.reverse()
+                    new_position = requests[0]
+                    with self.lock:
+                        for p in requests:
+                            if p not in self.positions:
+                                new_position = p
+                else:
+                    new_position = self.compute_path_to_target()
+
+                if self.is_position_valid(new_position) and (
+                    self.current_pos[0] != new_position[0]
+                    or self.current_pos[1] != new_position[1]
+                ):
+                    with self.lock:
+                        if new_position not in self.positions:
+                            self.positions[self._id] = new_position  # shared
+                            self.move(new_position)
+                            self.heatmap[self._id].clear()  # shared
+                            self.stats["moves_count"] += 1  # shared
+                        else:
+                            self.heatmap[self.positions.index(new_position)].append(
+                                self.current_pos
+                            )  # SHARED
+                sleep(Agent.sleep_duration)
 
     def die(self):
         self._stop_event.set()

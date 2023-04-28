@@ -22,27 +22,28 @@ class Solver:
         start_positions = [
             (col, row) for row in range(self.grid_dim) for col in range(self.grid_dim)
         ]
-        target_positions = start_positions.copy()
 
         # init shared memory
         lock = threading.Lock()
         self.positions = [
             _pop_random_element(start_positions) for _ in range(self.nb_agents)
         ]
-        self.stats = {"moves_count": 0}
+        self.stats = {"moves_count": 0, "random_moves": 10000}
         self.heatmap = [[] for _ in range(self.nb_agents)]
+        barrier = threading.Barrier(self.nb_agents)
 
         # generate agents
         return [
             Agent(
                 i,
                 self.positions[i],
-                _pop_random_element(target_positions),
+                self.positions[i],
                 (randint(0, 255), randint(0, 255), randint(0, 255)),
                 self.positions,
                 self.stats,
                 self.heatmap,
                 lock,
+                barrier,
             )
             for i in range(self.nb_agents)
         ]
