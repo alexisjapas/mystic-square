@@ -7,6 +7,7 @@ from collections import Counter
 
 class Agent(threading.Thread):
     n_agents: ClassVar[int] = 0
+    sleep_duration: ClassVar[float]
     grid_dim: ClassVar[int]
 
     def __init__(
@@ -142,7 +143,7 @@ class Agent(threading.Thread):
                             self.current_pos
                         )  # SHARED
 
-            sleep(0.001)
+            sleep(Agent.sleep_duration)
 
     def die(self):
         self._stop_event.set()
