@@ -37,7 +37,7 @@ class Display:
         )
         self.nb_agents_selector = self.menu.add.selector(
             "Number Of Agents: ",
-            [(f"{i}", i) for i in range(1, self.max_agents)],
+            [(f"{i}", i) for i in range(1, self.max_agents + 1)],
             default=5,
         )
         self.nb_simulations_selector = self.menu.add.selector(
@@ -47,9 +47,6 @@ class Display:
         self.agents_sleeps_duration_selector = self.menu.add.selector(
             "Agents Sleep Duration (seconds): ",
             [(f"{pow(10, -(4-i))}", pow(10, -(4 - i))) for i in range(5)],
-        )
-        self.seed = self.menu.add.selector(
-            "Seed: ", [(f"{i}", i) for i in range(2001)], default=42
         )
         self.menu.add.vertical_margin(50)
 
