@@ -40,8 +40,8 @@ class Agent(threading.Thread):
         self.random_mode = True
         self.active_mode = False
         self.requests_count = 0
-        self.patience_max = 100
-        self.patience = 100
+        self.patience_max = 333
+        self.patience = 333
         self._stop_event = threading.Event()
 
     def has_reach_target(self):
@@ -50,7 +50,6 @@ class Agent(threading.Thread):
                 self.target_pos[i] - self.current_pos[i]
                 for i in range(len(self.current_pos))
             ]
-
         )
 
     def is_position_valid(self, position):
