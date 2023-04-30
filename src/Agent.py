@@ -1,5 +1,5 @@
 import threading
-from random import choice, shuffle
+from random import choice, choices, shuffle
 from time import sleep
 from typing import ClassVar
 from collections import Counter
@@ -39,6 +39,9 @@ class Agent(threading.Thread):
         self.barrier = barrier
         self.random_mode = True
         self.active_mode = False
+        self.requests_count = 0
+        self.patience_max = 333
+        self.patience = 333
         self._stop_event = threading.Event()
 
     def has_reach_target(self):
@@ -109,7 +112,6 @@ class Agent(threading.Thread):
         while True:
             # death
             if self._stop_event.is_set():
-                # print(f"Agent {self._id} died :(")
                 break
 
             # stats computing
@@ -117,6 +119,7 @@ class Agent(threading.Thread):
                 [abs(self.target_pos[i] - self.current_pos[i]) for i in range(2)]
             )
 
+            # run
             if self.random_mode:
                 with self.lock:
                     if self.stats["random_moves"] < 1:
@@ -138,14 +141,22 @@ class Agent(threading.Thread):
                         self.stats["random_moves"] -= 1  # shared
                 sleep(0.00001)
             elif not self.active_mode:
-                print(f"Agent {self._id} on duty!")
+                # print(f"Agent {self._id} on duty!")
                 self.active_mode = True
                 self.barrier.wait()
             else:
-                if len(self.heatmap[self._id]) > 13:
-                    # get urgency
-                    # urgency = len(self.heatmap[self._id])
+                with self.lock:
+                    if len(self.heatmap[self._id]) != self.requests_count:
+                        self.patience = self.patience_max
+                        self.requests_count = len(self.heatmap[self._id])
+                    elif self.requests_count > 0:
+                        self.patience -= 1
+                    if self.patience < 1:
+                        self.heatmap[self._id].clear()
+                        self.requests_count = 0
+                        self.patience = self.patience_max
 
+                if len(self.heatmap[self._id]) > 13:
                     # get unique requests sorted by count
                     counts = Counter(self.heatmap[self._id])
                     sorted_counts = counts.most_common()
@@ -156,12 +167,17 @@ class Agent(threading.Thread):
                     for p in possible_positions:
                         if p not in requests:
                             requests.append(p)
-                    requests.reverse()
-                    new_position = requests[0]
+
+                    # pick a random element with more chances for those with lower index
+                    weights = [w + 1 for w in range(len(requests))]
+                    total_weights = sum(weights)
+                    weights = [w / total_weights for w in weights]
+                    new_position = choices(requests, weights=weights)[0]
                     with self.lock:
                         for p in requests:
                             if p not in self.positions:
                                 new_position = p
+                        self.heatmap[self._id].pop(0)
                 else:
                     new_position = self.compute_path_to_target()
 
