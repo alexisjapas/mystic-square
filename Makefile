@@ -1,4 +1,4 @@
-VENV		:= test -d venv || python3.10 -m venv venv
+VENV		:= test -d venv || python3 -m venv venv
 INSTALL	:= . venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
 
 install:venv
