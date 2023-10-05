@@ -130,3 +130,7 @@ dmypy.json
 
 # iOS specifics
 .DS_Store
+
+# flakes
+.direnv
+.devenv

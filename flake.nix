@@ -31,6 +31,23 @@
                     (python3.withPackages (ps: (with ps; [
                       pygame
                       black
+                      (
+                        buildPythonPackage rec {
+                          pname = "pygame-menu";
+                          version = "4.4.3";
+                          src = fetchPypi {
+                            inherit pname version;
+                            sha256 = "AqmeVXYB81bOLMgqEOmLy1gdU5pBxmbE7mFPrjZsNkc=";
+                          };
+                          doCheck = false;
+                          propagatedBuildInputs = [
+                            # Specify dependencies
+                            pygame
+                            pyperclip
+                            typing-extensions
+                          ];
+                        }
+                      )
                     ])))
                   ];
 
