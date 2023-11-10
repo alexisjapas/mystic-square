@@ -1,27 +1,19 @@
-# ing3_mystic-square
+# mystic-square
+This project is a multi-agent mystic-square game solver. Each tile is autonomous and try to reach its final destination. Agents can:
+- Move if the destination cell is empty (white)
+- Request other tiles to move if they block them
 
-## installation
-Only UNIX and derivatives are officially supported.
+<img src="assets/screenshot.png" alt="Project screenshot"/>
 
-### requirements
-`git make`
+## Installation
+This project uses [Nix](https://nixos.org/) with [flakes enabled](https://nixos.wiki/wiki/Flakes) as environment manager.
 
-### setup
-```bash
-git clone https://github.com/alexisjapas/ing3_mystic-square.git
-cd ing3_mystic-square
-make
-```
+## Usage
+Assuming you are at `mystic-square` root.
 
-## usage
-Assuming you are at `ing3_mystic-square` root.
-
-### activate virtual environment
-```bash
-source venv/bin/activate
-```
-
-### run
 ```bash
 python src/main.py
 ```
+
+## This project is part of my engineering school curriculum
+[<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/CY_Tech.svg/320px-CY_Tech.svg.png" alt="CYTech logo"/>](https://cytech.cyu.fr/)
